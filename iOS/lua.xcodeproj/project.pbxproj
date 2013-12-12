@@ -12,6 +12,7 @@
 		E7176DA618577870002709F2 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E78BED511856A3B500561476 /* UIKit.framework */; };
 		E7176DAC18577870002709F2 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = E7176DAA18577870002709F2 /* InfoPlist.strings */; };
 		E7176DAE18577870002709F2 /* LuaTests_iOS.m in Sources */ = {isa = PBXBuildFile; fileRef = E7176DAD18577870002709F2 /* LuaTests_iOS.m */; };
+		E7279EFE185A551D00CAE87C /* coroutine_tests.lua in Resources */ = {isa = PBXBuildFile; fileRef = E7279EFD185A551D00CAE87C /* coroutine_tests.lua */; };
 		E78BEE621856A56A00561476 /* lapi.c in Sources */ = {isa = PBXBuildFile; fileRef = E78BEE271856A56A00561476 /* lapi.c */; };
 		E78BEE631856A56A00561476 /* lauxlib.c in Sources */ = {isa = PBXBuildFile; fileRef = E78BEE291856A56A00561476 /* lauxlib.c */; };
 		E78BEE641856A56A00561476 /* lbaselib.c in Sources */ = {isa = PBXBuildFile; fileRef = E78BEE2B1856A56A00561476 /* lbaselib.c */; };
@@ -90,6 +91,7 @@
 		E7176DAB18577870002709F2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		E7176DAD18577870002709F2 /* LuaTests_iOS.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LuaTests_iOS.m; sourceTree = "<group>"; };
 		E7176DAF18577870002709F2 /* LuaTests_iOS-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "LuaTests_iOS-Prefix.pch"; sourceTree = "<group>"; };
+		E7279EFD185A551D00CAE87C /* coroutine_tests.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = coroutine_tests.lua; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.lua; };
 		E78BED3D1856A3B400561476 /* liblua.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = liblua.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		E78BED401856A3B400561476 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		E78BED4E1856A3B400561476 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
@@ -289,6 +291,7 @@
 		E7AF73F9185785F4003A229F /* scripts */ = {
 			isa = PBXGroup;
 			children = (
+				E7279EFD185A551D00CAE87C /* coroutine_tests.lua */,
 				E7AF73FA185785F4003A229F /* chapter_6.lua */,
 			);
 			path = scripts;
@@ -368,6 +371,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E7279EFE185A551D00CAE87C /* coroutine_tests.lua in Resources */,
 				E7176DAC18577870002709F2 /* InfoPlist.strings in Resources */,
 				E7AF73FB185785F4003A229F /* chapter_6.lua in Resources */,
 			);

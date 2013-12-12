@@ -156,4 +156,8 @@ int luaopen_TestLib(lua_State *state) {
   lua_pop(_state, 1);
 }
 
+-(void)testLuaThread {
+  
+}
+
 @end
