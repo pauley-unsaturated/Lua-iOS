@@ -2,33 +2,34 @@ local M = {}
 
 function doState(state)
   returnVal, nextState = state()
-  coroutine.yield(returnVal)
   if (nextState == 0) then
-    return nextState;
+    return returnVal;
+  else
+    coroutine.yield(returnVal)
+    return doState(nextState)
   end
-  return doState(nextState)
 end
 
-local function stateOne()
+function stateOne()
   return 1, stateTwo
 end
 
-local function stateTwo()
+function stateTwo()
   return 2, stateThree
 end
 
-local function stateThree()
+function stateThree()
   return 3, 0
 end
 
-local function startState()
+function startState()
   return stateOne
 end
 
 function M.new()
   return coroutine.create( 
     function ()
-      doState(startState())
+      return doState(startState())
     end
   )
 end

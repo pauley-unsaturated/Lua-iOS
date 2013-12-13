@@ -67,6 +67,15 @@ int luaopen_TestLib(lua_State *state) {
   XCTAssertFalse(luaL_loadfile(_state, scriptPath.UTF8String), @"Failed to load the lua scripts");
   XCTAssertFalse(lua_pcall(_state, 0, 0, 0), @"Failed to run the lua scripts");
   
+  
+  scriptPath = [bundleDir stringByAppendingPathComponent:@"coroutine_tests.lua"];
+  XCTAssertFalse(luaL_loadfile(_state, scriptPath.UTF8String), @"Failed to load the lua script");
+  XCTAssertFalse(lua_pcall(_state, 0, 1, 0), @"Failed to run the lua scripts");
+  XCTAssertEqual(1, lua_gettop(_state), @"Script didn't return the right number of values");
+  XCTAssertEqual(LUA_TTABLE, lua_type(_state, -1), @"Script didn't return a module");
+  lua_setglobal(_state, "TestStateMachine");
+  
+  
   // It looks like we need to eagerly require the external modules before we go running lua scripts, or
   //  we may fail to load the external module. It would be nice to be able to do this lazily, but
   //  honestly it probably isn't that big of a deal.
@@ -156,8 +165,48 @@ int luaopen_TestLib(lua_State *state) {
   lua_pop(_state, 1);
 }
 
--(void)testLuaThread {
+// Testing lua cooperitive multitasking (A.K.A. coroutines or continuations)
+-(void)testLuaThreads {
+  char* inlineScript = "return TestStateMachine.new()";
+  XCTAssertFalse(luaL_loadstring(_state, inlineScript), @"Failed to load the inline script");
+  XCTAssertFalse(lua_pcall(_state, 0, 1, 0), @"Failed to run the inline script");
+  XCTAssertEqual(1, lua_gettop(_state), @"script returns the wrong number of results");
   
+  XCTAssertTrue(lua_isthread(_state, -1), @"script didn't return a thread");
+  lua_State* thread = lua_tothread(_state, -1);
+  int ref = luaL_ref(_state, LUA_REGISTRYINDEX);
+  lua_gc(_state, LUA_GCRESTART, 0);
+  lua_gc(_state, LUA_GCCOLLECT, 0);
+  // It looks like you pass the thread as the "state" and the global thread as the "from"
+  //  This is equivalent to calling coroutine.resume(thread) from _state
+  XCTAssertEqual(LUA_YIELD, lua_resume(thread, _state, 0), @"error running thread!");
+  // resume returns status, value
+  XCTAssertEqual(1, lua_gettop(thread), @"thread returned the wrong number of results");
+  int isInt = 0;
+  lua_Integer returnValue = lua_tointegerx(thread, -1, &isInt);
+  XCTAssertTrue(isInt, @"thread returned a non-int value");
+  XCTAssertEqual(1, returnValue, @"thread returned an unexpected value!");
+  lua_pop(thread, 1);
+  
+  XCTAssertEqual(LUA_YIELD, lua_resume(thread, _state, 0), @"error running thread");
+  XCTAssertEqual(1, lua_gettop(thread), @"thread returned the wrong number of results");
+  isInt = 0;
+  returnValue = lua_tointegerx(thread, -1, &isInt);
+  XCTAssertTrue(isInt, @"thread returned a non-int value");
+  XCTAssertEqual(2, returnValue, @"thread returned an unexpected value!");
+  lua_pop(thread, 1);
+  XCTAssertEqual(LUA_OK, lua_resume(thread, _state, 0), @"error running thread");
+  XCTAssertEqual(1, lua_gettop(thread), @"thread returned the wrong number of results");
+  isInt = 0;
+  returnValue = lua_tointegerx(thread, -1, &isInt);
+  XCTAssertTrue(isInt, @"thread returned a non-int value");
+  XCTAssertEqual(3, returnValue, @"thread returned an unexpected value!");
+  lua_pop(thread, 1);
+  // and now the thread is toast, we can nuke it.
+  luaL_unref(_state, LUA_REGISTRYINDEX, ref);
+  // run the simple inline script just for giggles.
+  lua_gc(_state, LUA_GCCOLLECT, 0);
+  [self testSimpleInlineScript];
 }
 
 @end
